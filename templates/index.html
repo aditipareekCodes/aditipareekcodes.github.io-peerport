@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeerPort | Secure Login</title>
+    <style>
+        /* Dark, Animated, 3D Theme */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;   /*Font stack */
+            background-color: #050505;     /*Hex color code.  #050505 = very dark black. */
+            color: #ffffff;                /*Text color - white */
+            display: flex;                   /*this activates   FLEXBOT LAYOUT - used to allign items easily */
+            justify-content: center;         /*this centers the content horizontally */
+            align-items: center;            /*this centers the content vertically */
+            height: 100vh;                /*sets the height of the body to 100% of the viewport height, ensuring it fills the screen */
+            margin: 0;                 /*removes default margin around the body */
+            overflow: hidden;       /*prevents scrollbars from appearing when the animated orbs move outside the viewport */
+        }
+
+        /* --- Animated Background Orbs --- */
+        .orb {
+            position: absolute;     /* Allows the orbs to be positioned anywhere on the screen without affecting the layout of other elements */
+            border-radius: 50%;     /*Makes square → circle. 50% of width and height */
+            filter: blur(80px);     /*Applies a blur effect to create a glowing, ethereal look. The higher the value, the more blurred the orb appears. */
+            z-index: -1;           /*Pushes element behind other elements.  Negative value ensures it stays in the background. */
+            opacity: 0.5;         /*Sets the transparency  0.5 means they are semi-transparent, allowing the background and other elements to show through. */
+            animation: float 8s infinite alternate ease-in-out;      /*float → animation name , 8s → duration ,  infinite → never stop , alternate → forward then backward ,
+                                                                         ease-in-out → smooth start and stop*/
+                                                                       
+        }
+        .orb-cyan {  
+            width: 350px;             /*Sets the width of the cyan orb to 350 pixels. This size, combined with the blur effect, creates a large, glowing presence on the screen. */
+            height: 350px;            /*Sets the height of the cyan orb to 350 pixels, making it a perfect circle when combined with the border-radius property. */
+            background: #00e5ff;        /*Sets the background color of the cyan orb to a bright, electric cyan using a hex color code. This vibrant color contrasts sharply with 
+                                                   the dark background, making the orb visually striking. */
+            top: 5%;                     /*Positions the cyan orb 5% from the top of the viewport, placing it near the upper part of the screen. This relative positioning allows
+                                           for better responsiveness across different screen sizes. */
+            left: 15%;                  /*Positions the cyan orb 15% from the left edge of the viewport, placing it towards the left side of the screen. This positioning, 
+                                       combined with the top property, helps create a balanced and dynamic background layout. */
+        }
+        .orb-orange {
+            width: 300px;
+            height: 300px;
+            background: #ff6b00;
+            bottom: 5%;
+            right: 15%;
+            animation-delay: -4s;         /* Makes them move out of sync */
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, 50px) scale(1.2); }
+        }
+
+        /* --- Shiny 3D Glassmorphism Card --- */
+        .auth-container {                /* This is the main container for the login and registration forms. It has a glassmorphism design, which gives it a modern, frosted glass appearance. */
+            background: rgba(20, 20, 20, 0.6);                /*rgba= red, green, blue, alpha. 20,20,20 = very dark gray. 0.6 = 60% visible, making it semi-transparent. */
+            backdrop-filter: blur(15px);                        /*Applies a blur effect to the area behind the container, enhancing the frosted glass look. The higher the value, 
+                                                                the more blurred the background appears through the container. */
+            padding: 40px;                                   /*space inside box between content and border. 40px means there is a 40 pixel gap on all sides, giving the content room to
+                                                                   breathe and preventing it from feeling cramped. */
+            border-radius: 16px;                             /*rounded corners*/
+            border: 1px solid rgba(0, 229, 255, 0.2);           /*thin glowing border*/
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8),           /*3D shadow for depth, with a strong black color to enhance the contrast against the dark background. 
+                                                                 The shadow is offset downwards (15px) and blurred (35px) to create a realistic depth effect. */
+            inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                  0 0 20px rgba(0, 229, 255, 0.1);
+            width: 100%;
+            max-width: 400px;
+            z-index: 1;
+            transition: transform 0.3s ease;    /* Smooth transition for hover effects */
+        }
+        
+        .auth-container:hover {
+            transform: translateY(-5px);      /* Slight lift on hover for a more interactive feel */
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                        0 0 30px rgba(0, 229, 255, 0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 5px; 
+            font-size: 32px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #00e5ff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .tagline {                             
+            text-align: center;
+            color: #888;
+            font-size: 11px;
+            text-transform: uppercase;          /*all text converts in uppercase */
+            letter-spacing: 2px;               /*adds space between letters  */
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        /* --- Form Elements --- */
+        .form-group {                        /*adds spacing between form fields. Each form field (label + input) is wrapped in a div with the class "form-group", which 
+                                             applies a bottom margin to create space between consecutive fields. */
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-size: 13px;
+            color: #b3b3b3;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        
+        /* 3D Input Fields */
+        input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+        }
+        
+        input:focus {            /* When the user clicks on an input field, it will have a glowing cyan border and a subtle inner shadow to indicate that it's active. The background also becomes slightly darker to enhance the focus effect. */
+            outline: none;
+            border-color: #00e5ff;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.4), inset 0 2px 5px rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        /* 3D Neon Button */
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(45deg, #ff6b00, #ff8c00);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 0, 0.4), inset 0 2px 0 rgba(255,255,255,0.2);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 0, 0.6), inset 0 2px 0 rgba(255,255,255,0.3);
+            background: linear-gradient(45deg, #ff8c00, #ffa500);
+        }
+        button:active {                            /* When the button is clicked, it will appear pressed down with a stronger shadow and a slight downward movement to enhance the 3D effect. The background also becomes more intense to indicate the active state. */
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(255, 107, 0, 0.4);
+        }
+
+        /* --- Links & Form Toggling --- */
+        .link-text {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+        }
+        .link-text a {
+            color: #00e5ff;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .link-text a:hover {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(0, 229, 255, 0.8);
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="orb orb-cyan"></div>
+<div class="orb orb-orange"></div>
+
+<div class="auth-container">
+    
+    <div id="login-section">
+        <h2>PeerPort</h2>
+        <p class="tagline">Resale Platform For Students</p>
+        
+        <form id="login-form" action="/login" method="POST">
+            <div class="form-group">
+                <label>College Email</label>
+                <input type="email" name="email" placeholder="e.g. 24104027@apsit.edu.in" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit">LOGIN SYSTEM</button>
+        </form>
+        
+        <div class="link-text">
+            <a href="#">Forgot Password?</a><br><br>
+            New recruit? <a onclick="toggleForms()">Initialize Registration</a>
+        </div>
+    </div>
+
+    <div id="register-section" class="hidden">
+        <h2>Create Access</h2>
+        <p class="tagline">Join PeerPort</p>
+        
+        <form id="register-form" action="/register" method="POST">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="full_name" placeholder="e.g. Aditi Pareek" required>
+            </div>
+            <div class="form-group">
+                <label>Moodle ID</label>
+                <input type="text" id="moodle_id" name="moodle_id" placeholder="8-Digit Academic ID" maxlength="8" required>
+            </div>
+            <div class="form-group">
+                <label>Official Email</label>
+                <input type="email" id="reg_email" name="email" placeholder="ID@apsit.edu.in" pattern=".*@apsit\.edu\.in$" title="Must end with @apsit.edu.in" required>
+            </div>
+            <div class="form-group">
+                <label>Create Password</label>
+                <input type="password" name="password" placeholder="Create a strong password" required>
+            </div>
+            
+            <button type="submit" id="otp-btn" style="background: linear-gradient(45deg, #00b8cc, #00e5ff); color: #000; box-shadow: 0 4px 15px rgba(0, 229, 255, 0.4);">CREATE ACCOUNT</button>
+        </form>
+        
+        <div class="link-text">
+            Already registered? <a onclick="toggleForms()">Return to Login</a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Toggle between login and register forms
+    function toggleForms() {
+        document.getElementById('login-section').classList.toggle('hidden');
+        document.getElementById('register-section').classList.toggle('hidden');
+    }
+</script>
+
+</body>
+</html>
